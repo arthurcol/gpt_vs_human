@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "gpt_vs_human"
+version = "0.1.0"
+description = "Detection of AI generated texts"
+authors = ["Arthur Collard <arthur.collard@hotmail.fr>"]
+
+[tool.poetry.dependencies]
+python = "==3.10.6"
+requests = "^2.28.2"
+notebook = "^6.5.2"
+ipython = "^8.10.0"
+black = "^23.1.0"
+isort = "^5.12.0"
+jupyterlab = "^3.6.1"
+matplotlib = "^3.7.0"
+pandas = "^1.5.3"
+pyarrow = "^11.0.0"
+scikit-learn = "^1.2.1"
+tensorflow-macos = "==2.9"
+tensorflow-metal = "==0.5.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
