@@ -18,6 +18,8 @@ pyarrow = "^11.0.0"
 scikit-learn = "^1.2.1"
 tensorflow-macos = "==2.9"
 tensorflow-metal = "==0.5.0"
+transformers = "^4.26.1"
+pydot = "^1.4.2"
 
 [tool.poetry.dev-dependencies]
 
