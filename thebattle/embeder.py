@@ -9,7 +9,7 @@ def embed_sentence_pretrained(w2v, sentence):
     """
     embedded_sentence = []
     for word in sentence:
-        if word in w2v.index_to_key:
+        if word in w2v:
             embedded_sentence.append(w2v.get_vector(word))
 
     return np.array(embedded_sentence)
@@ -22,8 +22,8 @@ def embed_corpus(X):
     vect = []
     for i, x in enumerate(sentences):
         vect.append(embed_sentence_pretrained(wv, x))
-        if i % 50 == 0:
-            print(f"{i*100/LEN:.2f}%")
+        if i % 100 == 0:
+            print(f"Embeded {i*100/LEN:.2f}% of the full corpus")
 
     vect_pad = tf.keras.utils.pad_sequences(
         vect, truncating="post", padding="post", maxlen=256, dtype=float

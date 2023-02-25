@@ -30,6 +30,7 @@ def get_ds(path_data):
         print("Loading dataset from local...")
         df = pd.read_csv(os.path.join(path_data, "data.csv"), index_col="id")
     else:
+        print("Downloading dataset from HF servers...")
         df = load_data_in_memory()
         df.set_index("id", inplace=True)
         df["random"] = np.random.random(len(df))

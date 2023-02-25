@@ -4,17 +4,17 @@ import tensorflow as tf
 from data import get_ds, get_X_y, serialize_example
 from embeder import embed_corpus
 
-df = get_ds(None)
+df = get_ds(os.environ["PATH_DATA"])
 X, y = get_X_y(df)
-
-X, y = X[:100], y[:100]
 
 vect_pad = embed_corpus(X)
 
+LEN = len(X)
+
 with tf.io.TFRecordWriter(
-    os.path.join(os.environ["PATH_DATA"], "dataset.tfrecord")
+    os.path.join(os.environ["PATH_DATA"], "wiki_generated_engineered.tfrecord")
 ) as writer:
-    for i in len(X):
+    for j, i in range(LEN):
         example = serialize_example(
             X.index[i],
             X.text.str.encode("utf-8").iloc[i],
@@ -25,3 +25,5 @@ with tf.io.TFRecordWriter(
             y.label.iloc[i],
         )
         writer.write(example)
+        if j % 100 == 0:
+            print(f"Wrote {i*100/LEN:.2f}% of the dataset on disk")
