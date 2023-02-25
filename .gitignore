@@ -7,3 +7,5 @@ models/
 *.csv
 .env
 *.png
+*.npy
+*.tfrecord

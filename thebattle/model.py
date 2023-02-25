@@ -9,4 +9,4 @@ def init_bert():
         shape=(256), dtype=tf.int32, name="attention_mask"
     )
 
-    return model
+    return
