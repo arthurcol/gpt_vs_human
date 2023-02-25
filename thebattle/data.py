@@ -26,6 +26,7 @@ def get_ds(path_data):
     """
     Load dataset and basic transformation for our task
     """
+    print(f"Looking for data in {path_data}")
     if "data.csv" in os.listdir(path_data):
         print("Loading dataset from local...")
         df = pd.read_csv(os.path.join(path_data, "data.csv"), index_col="id")

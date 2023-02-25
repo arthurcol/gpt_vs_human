@@ -17,7 +17,7 @@ def embed_sentence_pretrained(w2v, sentence):
 
 def embed_corpus(X):
     wv = load("glove-wiki-gigaword-100")
-    sentences = X.text[:100]
+    sentences = X.text
     LEN = len(sentences)
     vect = []
     for i, x in enumerate(sentences):

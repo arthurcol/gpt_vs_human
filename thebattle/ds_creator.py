@@ -14,7 +14,7 @@ LEN = len(X)
 with tf.io.TFRecordWriter(
     os.path.join(os.environ["PATH_DATA"], "wiki_generated_engineered.tfrecord")
 ) as writer:
-    for j, i in range(LEN):
+    for j, i in enumerate(range(LEN)):
         example = serialize_example(
             X.index[i],
             X.text.str.encode("utf-8").iloc[i],
