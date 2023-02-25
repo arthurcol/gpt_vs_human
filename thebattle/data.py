@@ -102,3 +102,25 @@ def _nonscaler_feature(value):
     return tf.train.Feature(
         bytes_list=tf.train.BytesList(value=[serialized_nonscalar.numpy()])
     )
+
+
+def serialize_example(id_, text, vect, nsentences, mean_w_p_s, var_w_p_s, label):
+    """
+    Creates a tf.train.Example message ready to be written to a file.
+    """
+    # Create a dictionary mapping the feature name to the tf.train.Example-compatible
+    # data type.
+    feature = {
+        "id": _int64_feature(int(id_)),
+        "text": _bytes_feature(text),
+        "vect": _nonscaler_feature(vect),
+        "nsentences": _int64_feature(int(nsentences)),
+        "mean_w_p_s": _float_feature(float(mean_w_p_s)),
+        "var_w_p_s": _float_feature(float(var_w_p_s)),
+        "label": _int64_feature(int(label)),
+    }
+
+    # Create a Features message using tf.train.Example.
+
+    example_proto = tf.train.Example(features=tf.train.Features(feature=feature))
+    return example_proto.SerializeToString()
