@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import requests
 import tensorflow as tf
+from google.cloud import storage
 
 
 def load_data_in_memory():

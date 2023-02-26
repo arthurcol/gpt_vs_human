@@ -7,7 +7,6 @@ import os
 
 import tensorflow as tf
 from data import get_ds, get_X_y, write_tfrecords
-from embeder import embed_corpus
 from dask.diagnostics import ProgressBar
 
 
@@ -46,15 +45,23 @@ def wraper(X, y, filename):
     write_tfrecords(X, vect_pad, y, filename)
 
 
+tfrecords_done = [
+    f for f in os.listdir(os.environ["PATH_DATA"]) if f.startswith("bertds")
+]
 lazy_results = []
 chunk_n = 1
 
 
 for chunk in chunkify(X, y, chunk_size):
-    print(chunk_n)
+    if f"bertds_{chunk_n}.tfrecord" in tfrecords_done:
+        chunk_n += 1
+        print("we skip that one >>>>", chunk_n)
+        continue
+
     chunk_x, chunk_y = chunk[0], chunk[1]
     r = dask.delayed(wraper)(chunk_x, chunk_y, f"bertds_{chunk_n}")
     lazy_results.append(r)
+    print("haha we have to do it", chunk_n)
     chunk_n += 1
 
 with ProgressBar():
