@@ -126,3 +126,28 @@ def serialize_example(id_, text, vect, nsentences, mean_w_p_s, var_w_p_s, label)
 
     example_proto = tf.train.Example(features=tf.train.Features(feature=feature))
     return example_proto.SerializeToString()
+
+
+def write_tfrecords(X, vect_pad, y, filename):
+    with tf.io.TFRecordWriter(
+        os.path.join(os.environ["PATH_DATA"], f"{filename}.tfrecord")
+    ) as writer:
+        for j, i in enumerate(range(len(X))):
+            example = serialize_example(
+                X.index[i],
+                X.text.str.encode("utf-8").iloc[i],
+                vect_pad[i],
+                X.nsentences.iloc[i],
+                X.mean_w_p_s.iloc[i],
+                X.var_w_p_s.iloc[i],
+                y.label.iloc[i],
+            )
+            writer.write(example)
+
+
+#             if j % 100 == 0:
+#                 print(f"Wrote {i*100/len(X):.2f}% of the dataset on disk")
+
+
+def chunkify(X, y, n):
+    return [(X[i : i + n], y[i : i + n]) for i in range(0, len(X), n)]

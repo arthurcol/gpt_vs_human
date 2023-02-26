@@ -1,29 +1,39 @@
+import dask
 import os
 
 import tensorflow as tf
-from data import get_ds, get_X_y, serialize_example
+from data import get_ds, get_X_y, write_tfrecords
 from embeder import embed_corpus
+from dask.diagnostics import ProgressBar
+
+from gensim.downloader import load
 
 df = get_ds(os.environ["PATH_DATA"])
 X, y = get_X_y(df)
 
-vect_pad = embed_corpus(X)
-
 LEN = len(X)
 
-with tf.io.TFRecordWriter(
-    os.path.join(os.environ["PATH_DATA"], "wiki_generated_engineered.tfrecord")
-) as writer:
-    for j, i in enumerate(range(LEN)):
-        example = serialize_example(
-            X.index[i],
-            X.text.str.encode("utf-8").iloc[i],
-            vect_pad[i],
-            X.nsentences.iloc[i],
-            X.mean_w_p_s.iloc[i],
-            X.var_w_p_s.iloc[i],
-            y.label.iloc[i],
-        )
-        writer.write(example)
-        if j % 100 == 0:
-            print(f"Wrote {i*100/LEN:.2f}% of the dataset on disk")
+
+def chunkify(X, y, n):
+    return [(X[i : i + n], y[i : i + n]) for i in range(0, len(X), n)]
+
+
+def wraper(X, y, filename, wv):
+    vect_pad = embed_corpus(X, wv)
+    write_tfrecords(X, vect_pad, y, filename)
+
+
+lazy_results = []
+chunk_n = 1
+
+wv = load("glove-wiki-gigaword-100")
+
+for chunk in chunkify(X[:100], y[:100], 10):
+    print(chunk_n)
+    chunk_x, chunk_y = chunk[0], chunk[1]
+    r = dask.delayed(wraper)(chunk_x, chunk_y, f"dataset_{chunk_n}", wv)
+    lazy_results.append(r)
+    chunk_n += 1
+
+with ProgressBar():
+    dask.compute(*lazy_results)
