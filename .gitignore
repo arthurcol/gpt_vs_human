@@ -6,6 +6,7 @@ logs/*/
 models/
 *.csv
 .env
+.envrc
 *.png
 *.npy
 *.tfrecord
