@@ -11,7 +11,11 @@ from gensim.downloader import load
 df = get_ds(os.environ["PATH_DATA"])
 X, y = get_X_y(df)
 
-LEN = len(X)
+if os.environ["MODE"] == "DEV":
+    X, y = X[:100], y[:100]
+    chunk_size = 10
+
+chunk_size = 500
 
 
 def chunkify(X, y, n):
@@ -28,7 +32,7 @@ chunk_n = 1
 
 wv = load("glove-wiki-gigaword-100")
 
-for chunk in chunkify(X[:100], y[:100], 10):
+for chunk in chunkify(X, y, chunk_size):
     print(chunk_n)
     chunk_x, chunk_y = chunk[0], chunk[1]
     r = dask.delayed(wraper)(chunk_x, chunk_y, f"dataset_{chunk_n}", wv)
